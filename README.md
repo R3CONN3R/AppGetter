@@ -1,34 +1,13 @@
-temp
-====
-To include this tool in your app you need to copy the resource files with the "request_" prefix.
+##AppGetter##
 
-Also copy:
+<img src="https://raw.github.com/Alex-R3CONN3R/AppGetter/master/ReadmeFiles/presentation.png" width="400" align="right" hspace="20">
 
-src/
-	de.jamoo.appgetter/
-		RequestActivity.java
-		
-		helpers/
-			AppInfo.java
-			SquareGridLayout.java	
+### What is it? ###
 
-Files to look into:
-res/
-	layout/
-		request_item_grid.xml
+A small tool to integrate into your icon pack dashboard app that let's your customers request unthemed apps.
 
+### How does it work? ###
 
-assets folder
-manifest.xml
------------
+The selected apps are send to you via email.
 
-Format of appfilter.xml
-You should use the format that is given from Nova Launcher when you long press and tap on "Edit".
------------
-
-Libraries
-You need to import the android support library. Right click on your project -> Android Tool -> Add support Library
-
-Enjoy!
-
-Alex Besler
+Attached to the email is a zip file containing the requested apps icons and activity names in an appfilter xml.
