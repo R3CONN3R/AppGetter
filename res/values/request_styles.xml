@@ -1,0 +1,66 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="RequestBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar"></style>
+
+    <style name="RequestActivityTheme" parent="RequestBaseTheme">
+        <item name="android:windowBackground">@color/request_background</item>
+    </style>
+
+    <style name="request_card_outer">
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingTop">@dimen/request_card_outer_padding_top</item>
+        <item name="android:paddingBottom">@dimen/request_card_outer_padding_bottom</item>
+        <item name="android:paddingLeft">@dimen/request_card_outer_padding_horizontal</item>
+        <item name="android:paddingRight">@dimen/request_card_outer_padding_horizontal</item>
+    </style>
+
+    <style name="request_card_inner">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">@dimen/request_card_inner_padding_left</item>
+        <item name="android:paddingRight">@dimen/request_card_inner_padding_right</item>
+        <item name="android:paddingTop">@dimen/request_card_inner_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/request_card_inner_padding_vertical</item>
+    </style>
+
+    <style name="request_card_thumbnail">
+        <item name="android:layout_width">@dimen/request_card_thumbnail</item>
+        <item name="android:layout_height">@dimen/request_card_thumbnail</item>
+    </style>
+
+    <style name="request_card_title_frame">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginLeft">@dimen/request_card_title_margin_left</item>
+    </style>
+
+    <style name="request_card_title_frame_grid">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="request_card_title">
+        <item name="android:textColor">@color/request_card_title</item>t
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/request_card_title</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="request_card_content">
+        <item name="android:textColor">@color/request_card_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/request_card_content</item>
+    </style>
+
+    <style name="request_card_shadow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/request_card_shadow</item>
+        <item name="android:src">@drawable/request_card_shadow</item>
+        <item name="android:layout_below">@id/card_bg</item>
+    </style>
+
+</resources>

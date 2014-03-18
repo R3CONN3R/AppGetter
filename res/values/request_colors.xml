@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="request_background">#FFcccccc</color>
+    <color name="request_card_unpressed">#60ffffff</color>
+    <color name="request_card_pressed">#FFffffff</color>
+    <color name="request_card_title">@android:color/primary_text_light</color>
+    <color name="request_card_content">@android:color/secondary_text_light</color>
+
+</resources>

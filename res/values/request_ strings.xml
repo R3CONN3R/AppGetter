@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Dummy text is needed! -->
+    <string name="request_dummy_text">Hello world!</string>
+    <!-- Loading screen line 1 -->
+    <string name="request_please_wait">Please wait…</string>
+    <!-- Loading screen line 2 -->
+    <string name="request_please_wait2">Processing Application Info…</string>
+    <!-- Overflow Button text -->
+    <string name="request_send_request">Send Request</string>
+    <!-- Toast text if no app is selected -->
+    <string name="request_toast_no_apps_selected">No Apps selected. Select at least one App</string>
+    <!-- The email the request gets send to -->
+    <string name="request_email_addr">requests.email@provider.com</string>
+    <!-- Email subject -->
+    <string name="request_email_subject">Request for MyIcons Icon Pack</string>
+    <!-- E-mail text -->
+    <string name="request_email_text">These apps are missing on my phone :\n\n</string>
+    
+    
+    <!-- Just leave this in here. If someone is clever enough to decompile the app he can see this -->
+    <string name="so_1337">Dear decompiler, you can find the contact details of the creator of this request tool below ;)</string>
+    <string name="request_made_by">Made by Alex Besler.</string>
+	<string name="request_gplus_url">https://plus.google.com/+AlexBesler</string>
+
+</resources>

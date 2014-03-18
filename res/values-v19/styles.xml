@@ -1,0 +1,6 @@
+<resources>
+    <style name="RequestBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:windowTranslucentNavigation">@bool/transparent_nav</item>
+    </style>
+
+</resources>

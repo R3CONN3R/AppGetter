@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.jamoo.appgetter"
+    android:versionCode="6"
+    android:versionName="1.6" >
+
+    <!-- I don't support API below 14 ! -->
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <!-- These permissions are needed. Otherwise you wont be able to create zip files. -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+        <!-- Add this activity to your manifest. Change the path to where the RequestActivity.java file is. -->
+        <activity
+            android:name="de.jamoo.appgetter.RequestActivity"
+            android:label="@string/app_name"
+            android:theme="@style/RequestActivityTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.jamoo.appgetter.MainActivity" />
+        </activity>
+        
+        <activity
+            android:name="de.jamoo.appgetter.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

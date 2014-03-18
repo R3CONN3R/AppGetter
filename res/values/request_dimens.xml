@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="request_card_outer_padding_top">4dp</dimen>
+    <dimen name="request_card_outer_padding_bottom">1dp</dimen>
+    <dimen name="request_card_outer_padding_horizontal">4dp</dimen>
+    
+    <dimen name="request_card_inner_padding_vertical">10dp</dimen>
+    <dimen name="request_card_inner_padding_left">10dp</dimen>
+    <dimen name="request_card_inner_padding_right">10dp</dimen>
+
+    <dimen name="request_card_thumbnail">48dip</dimen>
+    <dimen name="request_card_thumbnail_margin">5dp</dimen>
+    <dimen name="request_card_title_margin_left">10dp</dimen>
+    <dimen name="request_card_title">18sp</dimen>
+    <dimen name="request_card_content">12sp</dimen>
+    <dimen name="request_card_shadow">3dp</dimen>
+
+</resources>
