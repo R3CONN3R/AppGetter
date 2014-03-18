@@ -14,4 +14,4 @@ Attached to the email is a zip file containing the requested apps icons and acti
 
 ### How-To ###
 
-[Here's](https://github.com/Alex-R3CONN3R/AppGetter.wiki.git) it!
+[Here's](https://github.com/Alex-R3CONN3R/AppGetter/wiki/How-To) it!
