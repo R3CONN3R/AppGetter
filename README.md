@@ -11,3 +11,7 @@ A small tool to integrate into your icon pack dashboard app that let's your cust
 The selected apps are send to you via email.
 
 Attached to the email is a zip file containing the requested apps icons and activity names in an appfilter xml.
+
+### How-To ###
+
+[Here's](https://github.com/Alex-R3CONN3R/AppGetter.wiki.git) it!
