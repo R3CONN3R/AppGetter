@@ -31,23 +31,28 @@ import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NavUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -95,7 +100,7 @@ public class RequestActivity extends Activity {
 	private static final int numCol_Landscape = 5; //For Landscape orientation. Tablets have +1 and LargeTablets +2 Columns.
 
 	private static final String TAG = "RequestActivity";
-	private static final boolean DEBUG = true; //TODO Set to false for PlayStore Release
+	private static final boolean DEBUG = false; //TODO Set to false for PlayStore Release
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -270,12 +275,12 @@ public class RequestActivity extends Activity {
 			{
 				final File save_loc = new File(SAVE_LOC);
 				final File save_loc2 = new File(SAVE_LOC2 + "/");
-				
+
 				deleteDirectory(save_loc2); //This deletes old zips
-				
+
 				save_loc.mkdirs(); // recreates the directory
 				save_loc2.mkdirs();
-				
+
 				Intent intent;
 				ArrayList arrayList = list_activities_final;
 				StringBuilder stringBuilderEmail = new StringBuilder();
@@ -317,7 +322,7 @@ public class RequestActivity extends Activity {
 						out.write(stringBuilderXML.toString());
 						out.close();
 					} catch (Exception e){ return;}
-					
+
 
 					SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd_hhmmss");
 					String zipName = date.format(new Date());
@@ -328,10 +333,10 @@ public class RequestActivity extends Activity {
 
 					intent = new Intent(android.content.Intent.ACTION_SEND);
 					intent.setType("application/zip");
-					
+
 					String[] arrayOfString = new String[1];
 					arrayOfString[0] = getString(R.string.request_email_addr);
-					
+
 					final Uri uri = Uri.parse("file://" + SAVE_LOC2 + "/" + zipName + ".zip");
 					intent.putExtra(Intent.EXTRA_STREAM, uri);
 					intent.putExtra("android.intent.extra.EMAIL", arrayOfString);
@@ -415,14 +420,20 @@ public class RequestActivity extends Activity {
 		{
 			ResolveInfo resolveInfo = (ResolveInfo)localIterator.next();
 
-			// This is the main part where the already styled are sorted out.
+			// This is the main part where the already styled apps are sorted out.
 			if ((list_activities.indexOf(resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name) == -1)) {
 
-				AppInfo tempAppInfo = new AppInfo(resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name, resolveInfo.loadLabel(pm).toString(), resolveInfo.loadIcon(pm), false);
+				AppInfo tempAppInfo = new AppInfo(
+						resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name,
+						resolveInfo.loadLabel(pm).toString(),
+						getHighResIcon(pm, resolveInfo),
+						true
+						);
 				arrayList.add(tempAppInfo);
 
 				// This is just for debugging
-				if(DEBUG)Log.i(TAG,"Added app: " + resolveInfo.loadLabel(pm));
+				//				if(DEBUG)
+				Log.i(TAG,"Added app: " + resolveInfo.loadLabel(pm));
 			} else {
 				// This is just for debugging
 				if(DEBUG)Log.v(TAG,"Removed app: " + resolveInfo.loadLabel(pm));
@@ -435,15 +446,60 @@ public class RequestActivity extends Activity {
 				Locale locale = Locale.getDefault();
 				Collator collator = Collator.getInstance(locale);
 				collator.setStrength(Collator.TERTIARY);
-				
+
 				if(DEBUG)Log.v(TAG,"Comparing \""+object1.getName()+"\" to \"" + object2.getName()+"\"");
-				
+
 				return collator.compare(object1.getName(), object2.getName());
 			}
 		});
 
 		list_activities_final = arrayList;
 		return;
+	}
+
+	private Drawable getHighResIcon(PackageManager pm, ResolveInfo resolveInfo){//TODO
+
+		Resources resources;
+
+		try {
+			ComponentName componentName = new ComponentName(resolveInfo.activityInfo.packageName , resolveInfo.activityInfo.name);
+
+			resources = pm.getResourcesForActivity(componentName);
+		} catch (PackageManager.NameNotFoundException e) {
+			Log.v(TAG, "PackageManager.NameNotFoundException");
+			return null;
+		}
+
+		int iconId = resolveInfo.getIconResource();
+		if(iconId != 0) {
+			Drawable icon;
+			try {
+				int density = DisplayMetrics.DENSITY_XHIGH;//Default density down to API 9
+				Log.v(TAG, "API " + Build.VERSION.SDK_INT);
+				
+				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {//When API >= 16
+					density = DisplayMetrics.DENSITY_XXHIGH;
+				}
+				
+				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {//When API >= 18
+					density = DisplayMetrics.DENSITY_XXXHIGH;
+					Log.v(TAG, "API 16");
+				}
+				
+				icon = resources.getDrawableForDensity(iconId, density);
+			} catch (Resources.NotFoundException e) {
+				Log.v(TAG, "Resources.NotFoundException");
+				return null;
+			}
+
+			Log.v(TAG, "icon height: " + icon.getIntrinsicHeight());
+			Log.v(TAG, "icon width: " + icon.getIntrinsicHeight());
+
+			return icon;
+
+		}
+
+		return null;
 	}
 
 	@SuppressWarnings("deprecation")
