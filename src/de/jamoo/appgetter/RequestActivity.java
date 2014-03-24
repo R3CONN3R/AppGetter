@@ -29,25 +29,31 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NavUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -270,12 +276,12 @@ public class RequestActivity extends Activity {
 			{
 				final File save_loc = new File(SAVE_LOC);
 				final File save_loc2 = new File(SAVE_LOC2 + "/");
-				
+
 				deleteDirectory(save_loc2); //This deletes old zips
-				
+
 				save_loc.mkdirs(); // recreates the directory
 				save_loc2.mkdirs();
-				
+
 				Intent intent;
 				ArrayList arrayList = list_activities_final;
 				StringBuilder stringBuilderEmail = new StringBuilder();
@@ -317,7 +323,7 @@ public class RequestActivity extends Activity {
 						out.write(stringBuilderXML.toString());
 						out.close();
 					} catch (Exception e){ return;}
-					
+
 
 					SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd_hhmmss");
 					String zipName = date.format(new Date());
@@ -328,15 +334,16 @@ public class RequestActivity extends Activity {
 
 					intent = new Intent(android.content.Intent.ACTION_SEND);
 					intent.setType("application/zip");
-					
+
 					String[] arrayOfString = new String[1];
 					arrayOfString[0] = getString(R.string.request_email_addr);
-					
+
 					final Uri uri = Uri.parse("file://" + SAVE_LOC2 + "/" + zipName + ".zip");
-					intent.putExtra(Intent.EXTRA_STREAM, uri);
+					intent.putExtra(Intent.EXTRA_STREAM, uri);//TODO
 					intent.putExtra("android.intent.extra.EMAIL", arrayOfString);
 					intent.putExtra("android.intent.extra.SUBJECT", getString(R.string.request_email_subject));
 					intent.putExtra("android.intent.extra.TEXT", stringBuilderEmail.toString());
+
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 					try{
@@ -415,10 +422,15 @@ public class RequestActivity extends Activity {
 		{
 			ResolveInfo resolveInfo = (ResolveInfo)localIterator.next();
 
-			// This is the main part where the already styled are sorted out.
+			// This is the main part where the already styled apps are sorted out.
 			if ((list_activities.indexOf(resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name) == -1)) {
 
-				AppInfo tempAppInfo = new AppInfo(resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name, resolveInfo.loadLabel(pm).toString(), resolveInfo.loadIcon(pm), false);
+				AppInfo tempAppInfo = new AppInfo(
+						resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name, //Get package/activity
+						resolveInfo.loadLabel(pm).toString(), //Get the app name
+						getHighResIcon(pm, resolveInfo), //Loads xxxhdpi icon, returns normal if it on fail
+						false //Unselect icon per default
+						);
 				arrayList.add(tempAppInfo);
 
 				// This is just for debugging
@@ -435,15 +447,41 @@ public class RequestActivity extends Activity {
 				Locale locale = Locale.getDefault();
 				Collator collator = Collator.getInstance(locale);
 				collator.setStrength(Collator.TERTIARY);
-				
+
 				if(DEBUG)Log.v(TAG,"Comparing \""+object1.getName()+"\" to \"" + object2.getName()+"\"");
-				
+
 				return collator.compare(object1.getName(), object2.getName());
 			}
 		});
 
 		list_activities_final = arrayList;
 		return;
+	}
+
+
+	private Drawable getHighResIcon(PackageManager pm, ResolveInfo resolveInfo){
+
+		Resources resources;
+		Drawable icon;
+
+		try {
+			ComponentName componentName = new ComponentName(resolveInfo.activityInfo.packageName , resolveInfo.activityInfo.name);
+
+			resources = pm.getResourcesForActivity(componentName);//Get resources for the activity
+
+			int iconId = resolveInfo.getIconResource();//Get the resource Id for the activity icon
+
+			if(iconId != 0) {
+				icon = resources.getDrawableForDensity(iconId, 640);//Loads the icon at xxhdpi resolution or lower.
+				return icon;
+			}
+			return resolveInfo.loadIcon(pm);
+
+		} catch (PackageManager.NameNotFoundException e) {
+			return resolveInfo.loadIcon(pm);//If it fails return the normal icon
+		} catch (Resources.NotFoundException e) {
+			return resolveInfo.loadIcon(pm);
+		}
 	}
 
 	@SuppressWarnings("deprecation")
