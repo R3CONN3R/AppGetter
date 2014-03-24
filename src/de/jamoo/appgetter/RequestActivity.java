@@ -29,6 +29,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -100,7 +101,7 @@ public class RequestActivity extends Activity {
 	private static final int numCol_Landscape = 5; //For Landscape orientation. Tablets have +1 and LargeTablets +2 Columns.
 
 	private static final String TAG = "RequestActivity";
-	private static final boolean DEBUG = false; //TODO Set to false for PlayStore Release
+	private static final boolean DEBUG = true; //TODO Set to false for PlayStore Release
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -338,10 +339,11 @@ public class RequestActivity extends Activity {
 					arrayOfString[0] = getString(R.string.request_email_addr);
 
 					final Uri uri = Uri.parse("file://" + SAVE_LOC2 + "/" + zipName + ".zip");
-					intent.putExtra(Intent.EXTRA_STREAM, uri);
+					intent.putExtra(Intent.EXTRA_STREAM, uri);//TODO
 					intent.putExtra("android.intent.extra.EMAIL", arrayOfString);
 					intent.putExtra("android.intent.extra.SUBJECT", getString(R.string.request_email_subject));
 					intent.putExtra("android.intent.extra.TEXT", stringBuilderEmail.toString());
+
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 					try{
@@ -424,16 +426,15 @@ public class RequestActivity extends Activity {
 			if ((list_activities.indexOf(resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name) == -1)) {
 
 				AppInfo tempAppInfo = new AppInfo(
-						resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name,
-						resolveInfo.loadLabel(pm).toString(),
-						getHighResIcon(pm, resolveInfo),
-						true
+						resolveInfo.activityInfo.packageName + "/" + resolveInfo.activityInfo.name, //Get package/activity
+						resolveInfo.loadLabel(pm).toString(), //Get the app name
+						getHighResIcon(pm, resolveInfo), //Loads xxxhdpi icon, returns normal if it on fail
+						false //Unselect icon per default
 						);
 				arrayList.add(tempAppInfo);
 
 				// This is just for debugging
-				//				if(DEBUG)
-				Log.i(TAG,"Added app: " + resolveInfo.loadLabel(pm));
+				if(DEBUG)Log.i(TAG,"Added app: " + resolveInfo.loadLabel(pm));
 			} else {
 				// This is just for debugging
 				if(DEBUG)Log.v(TAG,"Removed app: " + resolveInfo.loadLabel(pm));
@@ -457,49 +458,30 @@ public class RequestActivity extends Activity {
 		return;
 	}
 
-	private Drawable getHighResIcon(PackageManager pm, ResolveInfo resolveInfo){//TODO
+
+	private Drawable getHighResIcon(PackageManager pm, ResolveInfo resolveInfo){
 
 		Resources resources;
+		Drawable icon;
 
 		try {
 			ComponentName componentName = new ComponentName(resolveInfo.activityInfo.packageName , resolveInfo.activityInfo.name);
 
-			resources = pm.getResourcesForActivity(componentName);
-		} catch (PackageManager.NameNotFoundException e) {
-			Log.v(TAG, "PackageManager.NameNotFoundException");
-			return null;
-		}
+			resources = pm.getResourcesForActivity(componentName);//Get resources for the activity
 
-		int iconId = resolveInfo.getIconResource();
-		if(iconId != 0) {
-			Drawable icon;
-			try {
-				int density = DisplayMetrics.DENSITY_XHIGH;//Default density down to API 9
-				Log.v(TAG, "API " + Build.VERSION.SDK_INT);
-				
-				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {//When API >= 16
-					density = DisplayMetrics.DENSITY_XXHIGH;
-				}
-				
-				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {//When API >= 18
-					density = DisplayMetrics.DENSITY_XXXHIGH;
-					Log.v(TAG, "API 16");
-				}
-				
-				icon = resources.getDrawableForDensity(iconId, density);
-			} catch (Resources.NotFoundException e) {
-				Log.v(TAG, "Resources.NotFoundException");
-				return null;
+			int iconId = resolveInfo.getIconResource();//Get the resource Id for the activity icon
+
+			if(iconId != 0) {
+				icon = resources.getDrawableForDensity(iconId, 640);//Loads the icon at xxhdpi resolution or lower.
+				return icon;
 			}
+			return resolveInfo.loadIcon(pm);
 
-			Log.v(TAG, "icon height: " + icon.getIntrinsicHeight());
-			Log.v(TAG, "icon width: " + icon.getIntrinsicHeight());
-
-			return icon;
-
+		} catch (PackageManager.NameNotFoundException e) {
+			return resolveInfo.loadIcon(pm);//If it fails return the normal icon
+		} catch (Resources.NotFoundException e) {
+			return resolveInfo.loadIcon(pm);
 		}
-
-		return null;
 	}
 
 	@SuppressWarnings("deprecation")
