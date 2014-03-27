@@ -275,7 +275,7 @@ public class RequestActivity extends Activity {
 			public void run()
 			{
 				final File save_loc = new File(SAVE_LOC);
-				final File save_loc2 = new File(SAVE_LOC2 + "/");
+				final File save_loc2 = new File(SAVE_LOC2);
 
 				deleteDirectory(save_loc2); //This deletes old zips
 
@@ -294,14 +294,17 @@ public class RequestActivity extends Activity {
 				{
 					if (((AppInfo)arrayList.get(i)).isSelected())
 					{
+						String iconName = (((AppInfo)arrayList.get(i)).getCode().split("/")[0].replace(".", "_") + "_" +((AppInfo)arrayList.get(i)).getCode().split("/")[1]).replace(".", "_");
+						if(DEBUG)Log.i(TAG, "iconName: " + iconName);
+						
 						stringBuilderEmail.append(((AppInfo)arrayList.get(i)).getName() + "\n");
-						stringBuilderXML.append("<!-- " + ((AppInfo)arrayList.get(i)).getName() +" -->\n<item component=\"ComponentInfo{"+((AppInfo)arrayList.get(i)).getCode()+"}\" drawable=\""+((AppInfo)arrayList.get(i)).getCode().split("/")[0]+"\"/>"+"\n");			
+						stringBuilderXML.append("<!-- " + ((AppInfo)arrayList.get(i)).getName() +" -->\n<item component=\"ComponentInfo{"+((AppInfo)arrayList.get(i)).getCode()+"}\" drawable=\""+ iconName +"\"/>"+"\n");			
 
 						Bitmap bitmap = ((BitmapDrawable)((AppInfo)arrayList.get(i)).getImage()).getBitmap();
 						FileOutputStream fOut;
 
 						try {
-							fOut = new FileOutputStream(SAVE_LOC + "/" + ((AppInfo)arrayList.get(i)).getCode().split("/")[0] + "_" +((AppInfo)arrayList.get(i)).getCode().split("/")[1]+ ".png");
+							fOut = new FileOutputStream(SAVE_LOC + "/" + iconName + ".png");
 							bitmap.compress(Bitmap.CompressFormat.PNG,100,fOut);
 							fOut.flush();
 							fOut.close();
